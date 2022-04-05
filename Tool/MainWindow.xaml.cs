@@ -27,9 +27,9 @@ namespace JocysCom.SslScanner.Tool
 				Global.AppData.Save();
 			}
 			if (Global.AppSettings.Certificates.Count == 0)
-				Global.AppSettings.Certificates.Add(new DataItem() { Host = "www.google.com", Port = 443 });
+				Global.AppSettings.Certificates.Add(new DataItem() { Host = "www.google.com", Port = 443, Environment = "Live", Group = "Web" });
 			if (Global.AppSettings.Domains.Count == 0)
-				Global.AppSettings.Domains.Add(new DataItem() { Host = "google.com" });
+				Global.AppSettings.Domains.Add(new DataItem() { Host = "google.com", Environment = "Live", Group = "Web" });
 			// Initialize.
 			InitializeComponent();
 			LoadHelpAndInfo();
