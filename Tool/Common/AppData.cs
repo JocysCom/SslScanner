@@ -33,14 +33,14 @@ namespace JocysCom.SslScanner.Tool
 			get => _WhoisValidFromRegex;
 			set => SetProperty(ref _WhoisValidFromRegex, value);
 		}
-		private string _WhoisValidFromRegex = @"Creation Date:\s*(?<Value>[^\s]+)";
+		private string _WhoisValidFromRegex = @"(Creation Date|Registered):\s*(?<Value>[^\s]+)";
 
 		public string WhoisValidToRegex
 		{
 			get => _WhoisValidToRegex;
 			set => SetProperty(ref _WhoisValidToRegex, value);
 		}
-		private string _WhoisValidToRegex = @"(Expiry|Expiration) Date:\s*(?<Value>[^\s]+)";
+		private string _WhoisValidToRegex = @"(Expiry Date|Expiration Date|Expires):\s*(?<Value>[^\s]+)";
 
 		#endregion
 
