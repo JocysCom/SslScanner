@@ -1,0 +1,28 @@
+<svg version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 512 512">
+    <title>environment network icon</title>
+    <desc>environment network icon from the IconExperience.com G-Collection. Copyright by INCORS GmbH (www.incors.com).</desc>
+    <defs>
+        <linearGradient x1="192" y1="432" x2="192.5905" y2="469.091" gradientUnits="userSpaceOnUse" id="color-1">
+            <stop offset="0" stop-color="#ffd041"/>
+            <stop offset="1" stop-color="#ffc001"/>
+        </linearGradient>
+        <radialGradient cx="172.9732" cy="157.99001" r="388.99881" fx="172.9732" fy="157.99001" gradientUnits="userSpaceOnUse" id="color-2">
+            <stop offset="0" stop-color="#4eb6f2"/>
+            <stop offset="0.2" stop-color="#43abe7"/>
+            <stop offset="1" stop-color="#0e76b2"/>
+        </radialGradient>
+        <radialGradient cx="172.67902" cy="162.33639" r="386.25282" fx="172.67902" fy="162.33639" gradientUnits="userSpaceOnUse" id="color-3">
+            <stop offset="0" stop-color="#c5e7fb"/>
+            <stop offset="0.21177" stop-color="#89cff7"/>
+            <stop offset="1" stop-color="#4eb6f2"/>
+        </radialGradient>
+    </defs>
+    <g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+        <path d="M144,448l96,0l0,-80l32,0l0,80l96,0l0,32l-224,0z" id="curve3" fill="#717f8f"/>
+        <path d="M208,432l96,0c9,0 16,7 16,16l0,32c0,9 -7,16 -16,16l-96,0c-9,0 -16,-7 -16,-16l0,-32c0,-9 7,-16 16,-16z" id="curve2" fill="url(#color-1)"/>
+        <path d="M256,0c115,0 208,93 208,208c0,115 -93,208 -208,208c-115,0 -208,-93 -208,-208c0,-115 93,-208 208,-208z" id="curve1" fill="url(#color-2)"/>
+        <path d="M264,16.5l0,79.5l70,0c-16,-44.5 -41,-74.5 -70,-79.5z M256,0c115,0 208,93 208,208c0,115 -93,208 -208,208c-115,0 -208,-93 -208,-208c0,-115 93,-208 208,-208z M307,23c18,17 32.5,42 43.5,73l61.5,0c-25.5,-35 -62,-61.5 -105,-73z M422.5,112l-67,0c7.5,26.5 12,56.5 12.5,88l80,0c-1.5,-32 -10.5,-62 -25.5,-88z M448,216l-80,0c-0.5,31.5 -5,61.5 -12.5,88l67,0c15,-26 24,-56 25.5,-88z M412,320l-61.5,0c-11,31 -25.5,56 -43.5,73c43,-11.5 79.5,-38 105,-73z M205,393c-18,-17 -32.5,-42 -43.5,-73l-61.5,0c25.5,35 62,61.5 105,73z M89.5,304l67,0c-7.5,-26.5 -12,-56.5 -12.5,-88l-80,0c1.5,32 10.5,62 25.5,88z M64,200l80,0c0.5,-31.5 5,-61.5 12.5,-88l-67,0c-15,26 -24,56 -25.5,88z M100,96l61.5,0c11,-31 25.5,-56 43.5,-73c-43,11.5 -79.5,38 -105,73z M339,112l-75,0l0,88l88,0c-0.5,-32 -5.5,-62 -13,-88z M352,216l-88,0l0,88l75,0c7.5,-26 12.5,-56 13,-88z M334,320l-70,0l0,79.5c29,-5 54,-35 70,-79.5z M248,399.5l0,-79.5l-70,0c16,44.5 41,74.5 70,79.5z M173,304l75,0l0,-88l-88,0c0.5,32 5.5,62 13,88z M160,200l88,0l0,-88l-75,0c-7.5,26 -12.5,56 -13,88z M178,96l70,0l0,-79.5c-29,5 -54,35 -70,79.5z" id="curve0" fill="url(#color-3)"/>
+    </g>
+</svg>

@@ -1,0 +1,46 @@
+<svg version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 512 512">
+    <title>contact icon</title>
+    <desc>contact icon from the IconExperience.com G-Collection. Copyright by INCORS GmbH (www.incors.com).</desc>
+    <defs>
+        <linearGradient x1="0" y1="64" x2="439.6575" y2="448" gradientUnits="userSpaceOnUse" id="color-1">
+            <stop offset="0" stop-color="#ffe080"/>
+            <stop offset="1" stop-color="#ffd34b"/>
+        </linearGradient>
+        <linearGradient x1="0" y1="64" x2="0" y2="127.9995" gradientUnits="userSpaceOnUse" id="color-2">
+            <stop offset="0" stop-color="#47afeb"/>
+            <stop offset="1" stop-color="#2a92ce"/>
+        </linearGradient>
+        <linearGradient x1="290.5" y1="160" x2="463.833" y2="365.94" gradientUnits="userSpaceOnUse" id="color-3">
+            <stop offset="0" stop-color="#89cff7"/>
+            <stop offset="1" stop-color="#d4edfc"/>
+        </linearGradient>
+        <linearGradient x1="350.5" y1="289.5" x2="388.0005" y2="290.25" gradientUnits="userSpaceOnUse" id="color-4">
+            <stop offset="0" stop-color="#f5a557"/>
+            <stop offset="1" stop-color="#ec923a"/>
+        </linearGradient>
+        <linearGradient x1="304" y1="316" x2="400.615" y2="359.3225" gradientUnits="userSpaceOnUse" id="color-5">
+            <stop offset="0" stop-color="#4eb6f2"/>
+            <stop offset="1" stop-color="#159fee"/>
+        </linearGradient>
+        <linearGradient x1="344" y1="310.5" x2="377.2295" y2="331.2635" gradientUnits="userSpaceOnUse" id="color-6">
+            <stop offset="0" stop-color="#fefeff"/>
+            <stop offset="1" stop-color="#e8f5fd"/>
+        </linearGradient>
+        <radialGradient cx="358.85704" cy="242.6416" r="215.33962" fx="358.85704" fy="242.6416" gradientUnits="userSpaceOnUse" id="color-7">
+            <stop offset="0" stop-color="#f5b673"/>
+            <stop offset="1" stop-color="#f5a557"/>
+        </radialGradient>
+    </defs>
+    <g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+        <path d="M16,64l480,0c9,0 16,7 16,16l0,352c0,9 -7,16 -16,16l-88,0c-4.5,0 -8,-3.5 -8,-8l0,-17.5c0,-3.5 2,-6.5 5.5,-7.5c6,-2 10.5,-8 10.5,-15c0,-9 -7,-16 -16,-16l-32,0c-9,0 -16,7 -16,16c0,7 4.5,13 10.5,15c3.5,1 5.5,4 5.5,7.5l0,17.5c0,4.5 -3.5,8 -8,8l-208,0c-4.5,0 -8,-3.5 -8,-8l0,-17.5c0,-3.5 2,-6.5 5.5,-7.5c6,-2 10.5,-8 10.5,-15c0,-9 -7,-16 -16,-16l-32,0c-9,0 -16,7 -16,16c0,7 4.5,13 10.5,15c3.5,1 5.5,4 5.5,7.5l0,17.5c0,4.5 -3.5,8 -8,8l-88,0c-9,0 -16,-7 -16,-16l0,-352c0,-9 7,-16 16,-16z" id="curve7" fill="url(#color-1)"/>
+        <path d="M16,64l480,0c9,0 16,7 16,16l0,48l-512,0l0,-48c0,-9 7,-16 16,-16z" id="curve6" fill="url(#color-2)"/>
+        <path d="M290.5,160l173.5,0l0,208l-173.5,0z" id="curve5" fill="url(#color-3)"/>
+        <path d="M404,314l0,-24.5c-17.5,0 -35.5,0 -53.5,0l0,24.5c0,7.5 13.5,14.5 27,14.5c13,0 26.5,-7 26.5,-14.5z" id="curve4" fill="url(#color-4)"/>
+        <path d="M344,316c-1.5,1 -2.5,1.5 -3.5,2.5c-11.5,6 -33,17.5 -36.5,49.5l146.5,0c-3.5,-32 -25,-43.5 -36.5,-49.5c-1,-1 -2.5,-1.5 -3.5,-2.5c-8,12 -22,13.5 -33.5,13.5c-11,0 -25,-3.5 -33,-13.5z" id="curve3" fill="url(#color-5)"/>
+        <path d="M377,331.5c-7,0 -15,-1.5 -21.5,-4.5c-4.5,-2.5 -9.5,-6 -11.5,-11c2,-1.5 4.5,-3.5 6.5,-5.5l0,0.5c0,7.5 13.5,14 27,14c13,0 26.5,-6.5 26.5,-14c2,2 4.5,3.5 6.5,5c-2,5 -7,8.5 -12,11c-6.5,3 -14,4.5 -21.5,4.5z" id="curve2" fill="url(#color-6)"/>
+        <path d="M377.5,182.5c40,0 53.5,28.5 53.5,57c0,35.5 -27,71.5 -53.5,71.5c-27,0 -54,-36 -54,-71.5c0,-28.5 13.5,-57 54,-57z" id="curve1" fill="url(#color-7)"/>
+        <path d="M64,320l80,0l0,16l-80,0z M64,272l176,0l0,16l-176,0z M64,224l176,0l0,16l-176,0z M64,176l176,0l0,16l-176,0z" id="curve0" fill="#717f8f"/>
+    </g>
+</svg>
