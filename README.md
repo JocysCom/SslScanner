@@ -14,6 +14,8 @@ One executable and one matching auto-created configuration file:
 
 <img alt="Files" src="Tool/Documents/Images/JocysComSslScanner_Files.png" width="200" height="64">
 
+Note: Executable tries to load config from the XML file with the same name.
+
 ## Screenshots
 
 <img alt="Certificates" src="Tool/Documents/Images/JocysComSslScanner_Certificates.png" width="640" height="340">
