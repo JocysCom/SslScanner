@@ -6,7 +6,7 @@ Scan SSL/TLS certificate and domain expiry dates.
 
 Digitally Signed Application v1.0.9.0 (2022-04-06)
 
-[Download - JocysCom.SslScanner.Tool.zip](https://github.com/JocysCom/SslScanner/releases/download/1.0.0.0/JocysCom.SslScanner.zip)
+[Download - JocysCom.SslScanner.Tool.zip](https://github.com/JocysCom/SslScanner/releases/download/1.0.0.0/JocysCom.SslScanner.Tool.zip)
 
 ## Files
 
