@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <None Remove="App.ico" />
+    <None Remove="Documents\ChangeLog.txt" />
+    <None Remove="Documents\License.txt" />
     <None Remove="Resources\BuildDate.txt" />
   </ItemGroup>
 
@@ -32,6 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Documents\ChangeLog.txt" />
+    <EmbeddedResource Include="Documents\License.txt" />
     <EmbeddedResource Include="Resources\BuildDate.txt" />
   </ItemGroup>
 

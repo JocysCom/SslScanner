@@ -52,20 +52,24 @@ namespace JocysCom.SslScanner.Tool.Controls
 					case MessageBoxImage.Warning:
 						return Icons.Current[Icons.Icon_Warning];
 					case MessageBoxImage.Information:
-						return Icons.Current[Icons.Icon_Information];
+						return Icons.Current[Icons.Icon_OK];
 					default:
-						return null;
+						return Icons.Current[Icons.Icon_InformationGrey];
 				}
 			}
 			if (cell.Column == ValidDaysColumn)
 			{
 				var date = item.ValidTo ?? new DateTime();
 				var daysLeft = date.Subtract(DateTime.Now).TotalDays;
-				Color? bgColor = null;
-				if (daysLeft < 90) bgColor = System.Windows.Media.Colors.LightYellow;
-				if (daysLeft < 30) bgColor = System.Windows.Media.Colors.Yellow;
-				if (daysLeft < 0) bgColor = Color.FromRgb(0xFF, 0xD0,0xD0);
-				cell.Background = bgColor.HasValue ? new SolidColorBrush(bgColor.Value) : null;
+				Style cellStyle = null;
+				if (item.ValidDays.HasValue)
+				{
+					cellStyle = (Style)App.Current.Resources["DataGridCell_D120"];
+					if (daysLeft < 90) cellStyle = (Style)App.Current.Resources["DataGridCell_D060"];
+					if (daysLeft < 30) cellStyle = (Style)App.Current.Resources["DataGridCell_D030"];
+					if (daysLeft < 0) cellStyle = (Style)App.Current.Resources["DataGridCell_D000"];
+				}
+				cell.Style = cellStyle;
 				return $"{item.ValidDays}";
 			}
 
@@ -78,21 +82,6 @@ namespace JocysCom.SslScanner.Tool.Controls
 				cell.Opacity = 0.5;
 				return item.IsActive ? "Active" : "";
 			}
-			//// Mouse.
-			//if (cell.Column == HasMouseColumn)
-			//	return item.HasMouse ? "Mouse" : "";
-			//if (cell.Column == HasMouseImageColumn)
-			//	return item.HasMouse ? Icons_Default.Current[Icons_Default.Icon_mouse2] : null;
-			//// Keyboard.
-			//if (cell.Column == HasKeyboardImageColumn)
-			//	return item.HasKeyboard ? Icons_Default.Current[Icons_Default.Icon_keyboard] : null;
-			//if (cell.Column == HasKeyboardColumn)
-			//	return item.HasKeyboard ? "Keyboard" : "";
-			//// Caret.
-			//if (cell.Column == HasCaretImageColumn)
-			//	return item.HasCaret ? Icons_Default.Current[Icons_Default.Icon_text_field] : null;
-			//if (cell.Column == HasCaretColumn)
-			//	return item.HasCaret ? "Caret" : "";
 			if (cell.Column == DateColumn)
 			{
 				value = string.Format("{0:HH:mm:ss:fff}", item.Date);
@@ -261,7 +250,7 @@ namespace JocysCom.SslScanner.Tool.Controls
 						NotesColumn, EndColumn);
 					ShowButtons(AddButton, ImportButton, ExportButton,
 						CertificateButton, WebButton,
-						DeleteButton, RefreshButton);
+						DeleteButton, RefreshButton, RefreshAllButton);
 					if (!ControlsHelper.IsDesignMode(this))
 						SetDataItems(Global.AppSettings.Certificates);
 					break;
@@ -274,16 +263,13 @@ namespace JocysCom.SslScanner.Tool.Controls
 						NotesColumn, EndColumn);
 					ShowButtons(AddButton, ImportButton, ExportButton,
 						WhoisButton, WebButton,
-						DeleteButton, RefreshButton);
+						DeleteButton, RefreshButton, RefreshAllButton);
 					if (!ControlsHelper.IsDesignMode(this))
 						SetDataItems(Global.AppSettings.Domains);
 					break;
 				default:
 					break;
 			}
-			// Re-attach events and update header.
-			//ReferenceList.ListChanged -= ReferenceList_ListChanged;
-			//ReferenceList.ListChanged += ReferenceList_ListChanged;
 			UpdateControlsFromList();
 		}
 
@@ -304,17 +290,6 @@ namespace JocysCom.SslScanner.Tool.Controls
 
 		void UpdateControlsFromList()
 		{
-			switch (DataType)
-			{
-				case DataItemType.Certificates:
-					//HeaderLabel.Content = string.Format("{0} Map Data Files", DataItems?.Count);
-					break;
-				case DataItemType.Domains:
-					//HeaderLabel.Content = string.Format("{0} Trip Items", DataItems?.Count);
-					break;
-				default:
-					break;
-			}
 			var item = MainDataGrid.SelectedItems.Cast<DataItem>().FirstOrDefault();
 			// Button: Whois.
 			WhoisButton.IsEnabled = !string.IsNullOrEmpty(item?.WhoisData);
@@ -331,6 +306,16 @@ namespace JocysCom.SslScanner.Tool.Controls
 		private void RefreshButton_Click(object sender, RoutedEventArgs e)
 		{
 			var items = GetCheckedOrSelectedItems(out var containsSelected);
+			Refresh(items);
+		}
+
+		private void RefreshAllButton_Click(object sender, RoutedEventArgs e)
+		{
+			Refresh(DataItems);
+		}
+
+		private void Refresh(IList<DataItem> items)
+		{
 			InfoPanel.AddTask(DataType);
 			_ScriptExecutorParam = new ScriptExecutorParam();
 			_ScriptExecutorParam.Data = items;

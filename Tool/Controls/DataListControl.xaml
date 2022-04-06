@@ -135,6 +135,16 @@
 					</StackPanel>
 				</Button>
 
+				<Button
+					Name="RefreshAllButton"
+					HorizontalAlignment="Right"
+					Click="RefreshAllButton_Click"
+					Style="{StaticResource ToolBarButton}">
+					<StackPanel Style="{StaticResource ButtonStackPanel}">
+						<ContentControl Content="{StaticResource Icon_Refresh}" Style="{StaticResource ButtonContentControl}" />
+						<Label x:Name="RefreshAllButtonLabel" Content="Refresh All" Style="{StaticResource ButtonLabel}" />
+					</StackPanel>
+				</Button>
 
 
 			</ToolBar>
@@ -361,7 +371,6 @@
 					x:FieldModifier="public"
 					EditingElementStyle="{StaticResource TextBoxRightCell}"
 					ElementStyle="{StaticResource TextBlockRightCell}"
-					Foreground="Gray"
 					Header="Valid Days">
 					<DataGridTextColumn.Binding>
 						<MultiBinding Converter="{StaticResource _MainDataGridFormattingConverter}">

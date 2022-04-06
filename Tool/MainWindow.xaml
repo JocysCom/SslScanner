@@ -58,8 +58,19 @@
 				</TabItem.Header>
 				<controls:OptionsControl x:Name="OptionsPanel" />
 			</TabItem>
+			<TabItem>
+				<TabItem.Header>
+					<StackPanel Orientation="Horizontal">
+						<ContentControl
+							Width="12"
+							Height="12"
+							VerticalAlignment="Center"
+							Content="{StaticResource Icon_Information}" />
+						<Label Padding="4,0,0,0" VerticalAlignment="Center" Content="About" />
+					</StackPanel>
+				</TabItem.Header>
+				<controls:AboutControl x:Name="AboutPanel" />
+			</TabItem>
 		</TabControl>
-
-
 	</Grid>
 </Window>
