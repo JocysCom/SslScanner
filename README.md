@@ -12,9 +12,9 @@ Digitally Signed Application v1.0.6.0 (2021-09-19)
 
 ## Screenshots
 
-<img alt="Main From" src="SslScanner/Documents/Images/JocysCom.SslScanner.Tool_Certificates.png" width="960" height="515">
+<img alt="Certificates src="Tool/Documents/Images/JocysCom.SslScanner.Tool_Certificates.png" width="960" height="515">
 
-<img alt="Main From" src="SslScanner/Documents/Images/JocysCom.SslScanner.Tool_Domains.png" width="960" height="515">
+<img alt="Domains" src="Tool/Documents/Images/JocysCom.SslScanner.Tool_Domains.png" width="960" height="515">
 
 
 
