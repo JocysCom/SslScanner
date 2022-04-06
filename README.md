@@ -1,14 +1,18 @@
 # Jocys.com SSL Scanner Tool
 
-Find out which process or program is taking the window focus.
-
-In game, mouse and keyborad could start temporary stop responding if other program takes the focus. This tools could help to find out which program steals the focus.
+Scan SSL/TLS certificate and domain expiry dates.
 
 # Download
 
-Digitally Signed Application v1.0.6.0 (2021-09-19)
+Digitally Signed Application v1.0.9.0 (2022-04-06)
 
 [Download - JocysCom.SslScanner.Tool.zip](https://github.com/JocysCom/SslScanner/releases/download/1.0.0.0/JocysCom.SslScanner.zip)
+
+## Files
+
+One executable and one matching auto-created configuration file:
+
+<img alt="Files" src="Tool/Documents/Images/JocysComSslScanner_Files.png" width="200" height="64">
 
 ## Screenshots
 
