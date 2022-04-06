@@ -27,9 +27,17 @@ namespace JocysCom.SslScanner.Tool
 				Global.AppData.Save();
 			}
 			if (Global.AppSettings.Certificates.Count == 0)
+			{
 				Global.AppSettings.Certificates.Add(new DataItem() { Host = "www.google.com", Port = 443, Environment = "Live", Group = "Web" });
+				Global.AppSettings.Certificates.Add(new DataItem() { Host = "google.com", Port = 443, Environment = "Live", Group = "Web" });
+				Global.AppSettings.Certificates.Add(new DataItem() { Host = "www.bing.com", Port = 443, Environment = "Live", Group = "Web" });
+				Global.AppSettings.Certificates.Add(new DataItem() { Host = "bing.com", Port = 443, Environment = "Live", Group = "Web" });
+				Global.AppSettings.Certificates.Add(new DataItem() { Host = "imap.gmail.com", Port = 993, Environment = "Live", Group = "Web" });
+				Global.AppSettings.Certificates.Add(new DataItem() { Host = "smtp.gmail.com", Port = 465, Environment = "Live", Group = "Web" });
+			}
 			if (Global.AppSettings.Domains.Count == 0)
 				Global.AppSettings.Domains.Add(new DataItem() { Host = "google.com", Environment = "Live", Group = "Web" });
+				Global.AppSettings.Domains.Add(new DataItem() { Host = "bing.com", Environment = "Live", Group = "Web" });
 			// Initialize.
 			InitializeComponent();
 			LoadHelpAndInfo();
