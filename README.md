@@ -16,6 +16,6 @@ One executable and one matching auto-created configuration file:
 
 ## Screenshots
 
-<img alt="Certificates" src="Tool/Documents/Images/JocysComSslScanner_Certificates.png" width="960" height="515">
+<img alt="Certificates" src="Tool/Documents/Images/JocysComSslScanner_Certificates.png" width="640" height="340">
                                                                                                                
-<img alt="Domains" src="Tool/Documents/Images/JocysComSslScanner_Domains.png" width="960" height="515">
+<img alt="Domains" src="Tool/Documents/Images/JocysComSslScanner_Domains.png" width="640" height="340">
