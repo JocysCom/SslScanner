@@ -36,8 +36,10 @@ namespace JocysCom.SslScanner.Tool
 				Global.AppSettings.Certificates.Add(new DataItem() { Host = "smtp.gmail.com", Port = 465, Environment = "Live", Group = "Web" });
 			}
 			if (Global.AppSettings.Domains.Count == 0)
+			{
 				Global.AppSettings.Domains.Add(new DataItem() { Host = "google.com", Environment = "Live", Group = "Web" });
 				Global.AppSettings.Domains.Add(new DataItem() { Host = "bing.com", Environment = "Live", Group = "Web" });
+			}
 			// Initialize.
 			InitializeComponent();
 			LoadHelpAndInfo();

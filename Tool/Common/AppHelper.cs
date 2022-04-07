@@ -9,13 +9,15 @@ namespace JocysCom.SslScanner.Tool
 	public class AppHelper
 	{
 
-		public static void ImportFromHostsFile(IList<DataItem> list, string content)
+		public static void ImportFromHostsFile(IList<DataItem> list, string content, bool preventDuplicates = false)
 		{
 			var items = JocysCom.ClassLibrary.Network.HostsFileItem.ParseHosts(content, true);
 			for (int i = 0; i < items.Count; i++)
 			{
 				var item = items[i];
-				var oldItem = list.FirstOrDefault(x => string.Equals(x.Host, item.Host, StringComparison.InvariantCultureIgnoreCase));
+				DataItem oldItem = null;
+				if (preventDuplicates)
+					oldItem = list.FirstOrDefault(x => string.Equals(x.Host, item.Host, StringComparison.InvariantCultureIgnoreCase));
 				if (oldItem == null)
 				{
 					oldItem = new DataItem() { Host = item.Host, Port = 443, Environment = "Live", Group = "Web" };
@@ -38,7 +40,8 @@ namespace JocysCom.SslScanner.Tool
 			for (int i = 0; i < source.Count; i++)
 			{
 				var item = source[i];
-				var oldItem = list.FirstOrDefault(x => string.Equals(x.Host, item.Host, StringComparison.InvariantCultureIgnoreCase));
+				// Find old item by host and port.
+				var oldItem = list.FirstOrDefault(x => string.Equals(x.Host, item.Host, StringComparison.InvariantCultureIgnoreCase) && x.Port == item.Port);
 				// Remove old item.
 				if (oldItem != null)
 					list.Remove(oldItem);

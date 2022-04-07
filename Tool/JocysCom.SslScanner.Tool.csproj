@@ -10,7 +10,7 @@
 	<Product>SSL Scanner Tool</Product>
 	<Description>Scan SSL/TLS certificate and domain expiry dates.</Description>
 	<ApplicationIcon>App.ico</ApplicationIcon>
-	<Version>1.0.9</Version>
+	<Version>1.0.10</Version>
 	<RepositoryUrl>https://github.com/JocysCom/SslScanner</RepositoryUrl>
 	<PackageProjectUrl>https://www.jocys.com</PackageProjectUrl>
 	<Copyright>Copyright © Jocys.com 2022</Copyright>

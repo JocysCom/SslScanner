@@ -1,6 +1,5 @@
 ﻿using JocysCom.ClassLibrary.Controls;
 using System;
-using System.Linq;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -92,6 +91,11 @@ namespace JocysCom.SslScanner.Tool
 					}
 					else if (param.DataItemType == DataItemType.Certificates)
 					{
+						e.SubMessage = "Test SSL/TLS...";
+						Report(e);
+						Test_SSL_Support.ProgressArgs = e;
+						Test_SSL_Support.Progress -= Progress;
+						Test_SSL_Support.Progress += Progress;
 						Test_SSL_Support.Results.Clear();
 						Test_SSL_Support.ProcessArguments(item.Host, item.Port);
 						var results = Test_SSL_Support.Results;
@@ -108,20 +112,11 @@ namespace JocysCom.SslScanner.Tool
 						if (bestResult != null)
 						{
 							var cert = bestResult.Certificate;
-							var key = cert.PublicKey;
-							var keyName = cert.PublicKey.EncodedKeyValue.Oid.FriendlyName;
 							item.CN = cert.Subject;
-							var rsa = cert.GetRSAPublicKey();
-							var dsa = cert.GetDSAPublicKey();
-							var ecc = cert.GetECDsaPublicKey();
-							var keySize = rsa?.KeySize ?? dsa?.KeySize ?? ecc?.KeySize;
-							var keyAlgorithm = cert.GetKeyAlgorithm();
 							item.ValidFrom = cert.NotBefore;
 							item.ValidTo = cert.NotAfter;
-							item.Algorithm = string.Format("{0}-{1}/{2}/{3}",
-								keyName,
-								keySize,
-								bestResult.CipherAlgorithm, bestResult.HashAlgorithm);
+							item.Algorithm = string.Format("{0}/{1}/{2}",
+								bestResult.ExchangeAlgorithm,bestResult.CipherAlgorithm, bestResult.HashAlgorithm);
 							// Get certificate.
 							var bytes = cert.Export(X509ContentType.Cert, (string)null);
 							var base64 = Convert.ToBase64String(bytes, Base64FormattingOptions.InsertLineBreaks);
