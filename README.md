@@ -1,10 +1,10 @@
 # Jocys.com SSL Scanner Tool
 
-Scan SSL/TLS certificate and domain expiry dates.
+Scan SSL/TLS certificate and domain expiry dates. Support STARTLS protocol: SMTP (TCP:25), POP3 (TCP:110) and IMAP (TCP:143).
 
 # Download
 
-Digitally Signed Application v1.0.9.0 (2022-04-06)
+Digitally Signed Application v1.0.10.0 (2022-04-07)
 
 [Download - JocysCom.SslScanner.Tool.zip](https://github.com/JocysCom/SslScanner/releases/download/1.0.0.0/JocysCom.SslScanner.Tool.zip)
 
