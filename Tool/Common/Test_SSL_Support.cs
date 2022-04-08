@@ -1,4 +1,3 @@
-using JocysCom.ClassLibrary.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,26 +31,31 @@ public class Test_SSL_Support
 			var rsa = cert.GetRSAPublicKey();
 			var dsa = cert.GetDSAPublicKey();
 			var ecc = cert.GetECDsaPublicKey();
-			_ExchangeKeySize = rsa?.KeySize ?? dsa?.KeySize ?? ecc?.KeySize;
-			ExchangeAlgorithm = $"{_ExchangeKeyName}-{_ExchangeKeySize}";
+			if (rsa != null)
+				_ExchangeKeySize = rsa.KeySize;
+			if (dsa != null)
+				_ExchangeKeySize = dsa.KeySize;
+			if (ecc != null)
+				_ExchangeKeySize = ecc.KeySize;
+			ExchangeAlgorithm = string.Format("{0}-{1}", _ExchangeKeyName, _ExchangeKeySize);
 			_SslPolicyErrors = errors;
 		}
 
 		public void UpdateFromSslStream(SslStream stream)
 		{
-			CipherAlgorithm = $"{stream.CipherAlgorithm}".ToUpper();
-			HashAlgorithm = $"{stream.HashAlgorithm}".ToUpper();
+			CipherAlgorithm = string.Format("{0}", stream.CipherAlgorithm).ToUpper();
+			HashAlgorithm = string.Format("{0}", stream.HashAlgorithm).ToUpper();
 		}
 
-		public X509Certificate2 Certificate => _Certificate;
+		public X509Certificate2 Certificate { get { return _Certificate; } }
 		private X509Certificate2 _Certificate;
 
-		public SslPolicyErrors SslPolicyErrors => _SslPolicyErrors;
+		public SslPolicyErrors SslPolicyErrors { get { return _SslPolicyErrors; } }
 		private SslPolicyErrors _SslPolicyErrors;
 
-		public string ExchangeKeyName => _ExchangeKeyName;
+		public string ExchangeKeyName { get { return _ExchangeKeyName; } }
 		private string _ExchangeKeyName;
-		public int? ExchangeKeySize => _ExchangeKeySize;
+		public int? ExchangeKeySize { get { return _ExchangeKeySize; } }
 		private int? _ExchangeKeySize;
 
 	}
@@ -61,16 +65,16 @@ public class Test_SSL_Support
 
 	#region IProgress
 
-	public static event EventHandler<ProgressEventArgs> Progress;
-	public static ProgressEventArgs ProgressArgs;
-
-	public static void Report(ProgressEventArgs e)
-		=> Progress?.Invoke(null, e);
+	public static Action<string> Progress;
 
 	#endregion
 
-	public static int ProcessArguments(string host, int port)
+	public static int ProcessArguments(string[] args)
 	{
+		var host = args[1];
+		int port;
+		if (!int.TryParse(args[2], out port))
+			port = 443;
 		var protocols = ((SslProtocols[])Enum.GetValues(typeof(SslProtocols))).ToList();
 		var ips = GetHostAddresses(host);
 		Console.Write("{0} {1}:{2}\r\n\r\n", ips, host, port);
@@ -86,43 +90,42 @@ public class Test_SSL_Support
 			ServicePointManager.SecurityProtocol |= (SecurityProtocolType)(Tls11 | Tls12 | Tls13);
 			//ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertificate;
 			var protocol = protocols[i];
-			ProgressArgs.SubMessage = $"Test {protocol.ToString().ToUpper()} {i + 1}/{protocols.Count}...";
-			Report(ProgressArgs);
+			if (Progress != null)
+				Progress.Invoke(string.Format("Test {0} {1}/{2}...", protocol.ToString().ToUpper(), i + 1, protocols.Count));
 			result.Protocol = protocol;
-			bool status;
 			result.CertificateError = null;
-			var connected = false; 
+			var connected = false;
+			Exception ex = null;
 			try
 			{
-				
+
 				// if SMTP, POP3 or IMAP then...
 				if (port == 25 || port == 110 || port == 143)
 					TestStarTLS(host, port, protocol, out connected);
 				else
 					TestTCP(host, port, protocol, out connected);
-				status = true;
 			}
 			catch (Exception ex1)
 			{
-				Console.WriteLine("{0}: {1}", ex1.GetType(), ex1.Message);
-				status = false;
+				ex = ex1;
 			}
-			result.Success = status;
+			var noError = ex == null;
+			result.Success = noError;
 			Console.Write(
 				"  {0,-5} = {1,-5}",
-				protocol, status);
-			var extra = status
+				protocol, noError);
+			var extra = noError
 				? string.Format(" | Exchange = {0,-5} | Cipher = {1,-5} | Hash = {2,-6}",
 					result.ExchangeAlgorithm, result.CipherAlgorithm, result.HashAlgorithm)
-				: "";
+				: string.Format(" | {0}", ex.Message);
 			Console.WriteLine(extra);
-			var ex = result.CertificateError;
+			var certEx = result.CertificateError;
 			if (result.CertificateError != null)
 			{
 				var foreDefault = Console.ForegroundColor;
 				Console.ForegroundColor = ConsoleColor.DarkYellow;
 				Console.WriteLine();
-				Console.WriteLine("        " + ex.Message);
+				Console.WriteLine("        " + certEx.Message);
 				foreach (var key in ex.Data.Keys)
 					Console.WriteLine("        {0}: {1}", key, ex.Data[key]);
 				Console.ForegroundColor = foreDefault;
@@ -217,8 +220,8 @@ public class Test_SSL_Support
 		if (connected)
 		{
 			var stream = client.GetStream();
-			using (var clearTextReader = new StreamReader(stream, null, true, -1, true))
-			using (var clearTextWriter = new StreamWriter(stream, null, -1, true) { AutoFlush = true })
+			using (var clearTextReader = new StreamReader(stream, System.Text.Encoding.ASCII, true, 4096, true))
+			using (var clearTextWriter = new StreamWriter(stream, System.Text.Encoding.ASCII, 4096, true) { AutoFlush = true })
 			using (var sslStream = new SslStream(stream, true, ValidateServerCertificate))
 			{
 				// SMTP
@@ -243,15 +246,14 @@ public class Test_SSL_Support
 					if (!startTlsResponse.StartsWith("220"))
 						throw new InvalidOperationException("SMTP Server did not respond to STARTTLS request");
 					sslStream.AuthenticateAsClient(host, null, protocol, false);
-					using (var reader = new StreamReader(sslStream))
-					using (var writer = new StreamWriter(sslStream) { AutoFlush = true })
-					{
-						writer.WriteLine("EHLO " + host);
-						Console.WriteLine(reader.ReadLine());
-						success = true;
-						result.UpdateFromSslStream(sslStream);
-					}
-
+					success = true;
+					result.UpdateFromSslStream(sslStream);
+					//using (var reader = new StreamReader(sslStream))
+					//using (var writer = new StreamWriter(sslStream) { AutoFlush = true })
+					//{
+					//	writer.WriteLine("EHLO " + host);
+					//	Console.WriteLine(reader.ReadLine());
+					//}
 				}
 				// POP3: https://datatracker.ietf.org/doc/html/rfc2595
 				if (port == 110)
@@ -265,14 +267,8 @@ public class Test_SSL_Support
 					if (!startTlsResponse.StartsWith("+OK"))
 						throw new InvalidOperationException("POP3 Server did not respond to STLS request");
 					sslStream.AuthenticateAsClient(host, null, protocol, false);
-					using (var reader = new StreamReader(sslStream))
-					using (var writer = new StreamWriter(sslStream) { AutoFlush = true })
-					{
-						writer.WriteLine("EHLO " + host);
-						Console.WriteLine(reader.ReadLine());
-						success = true;
-						result.UpdateFromSslStream(sslStream);
-					}
+					success = true;
+					result.UpdateFromSslStream(sslStream);
 				}
 				// IMAP: https://tools.ietf.org/html/rfc2595
 				if (port == 143)
@@ -286,14 +282,8 @@ public class Test_SSL_Support
 					if (!startTlsResponse.StartsWith("+OK"))
 						throw new InvalidOperationException("IMAP Server did not respond to STLS request");
 					sslStream.AuthenticateAsClient(host, null, protocol, false);
-					using (var reader = new StreamReader(sslStream))
-					using (var writer = new StreamWriter(sslStream) { AutoFlush = true })
-					{
-						writer.WriteLine("EHLO " + host);
-						Console.WriteLine(reader.ReadLine());
-						success = true;
-						result.UpdateFromSslStream(sslStream);
-					}
+					success = true;
+					result.UpdateFromSslStream(sslStream);
 				}
 			}
 			client.EndConnect(asyncResult);

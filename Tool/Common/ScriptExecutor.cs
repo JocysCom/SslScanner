@@ -93,11 +93,13 @@ namespace JocysCom.SslScanner.Tool
 					{
 						e.SubMessage = "Test SSL/TLS...";
 						Report(e);
-						Test_SSL_Support.ProgressArgs = e;
-						Test_SSL_Support.Progress -= Progress;
-						Test_SSL_Support.Progress += Progress;
+						Test_SSL_Support.Progress = (string message) =>
+						{
+							e.SubMessage = message;
+							Report(e);
+						};
 						Test_SSL_Support.Results.Clear();
-						Test_SSL_Support.ProcessArguments(item.Host, item.Port);
+						Test_SSL_Support.ProcessArguments(new[] { null, item.Host, item.Port.ToString() });
 						var results = Test_SSL_Support.Results;
 						var protocols = SslProtocols.None;
 						Test_SSL_Support.Result bestResult = null;
