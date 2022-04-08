@@ -1,6 +1,6 @@
 # Jocys.com SSL Scanner Tool
 
-Scan SSL/TLS certificate and domain expiry dates. Support STARTLS protocol: SMTP (TCP:25), POP3 (TCP:110) and IMAP (TCP:143).
+Scan SSL/TLS certificate and domain expiry dates. Support STARTLS protocol: SMTP (TCP:25), POP3 (TCP:110) and IMAP (TCP:143). It is a .NET Core 3.1 Project (Linux, macOS, and Windows).
 
 # Download
 
