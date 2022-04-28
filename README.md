@@ -20,6 +20,6 @@ Note: Executable tries to load config from the XML file with the same name.
 
 ## Screenshots
 
-<img alt="Certificates" src="Tool/Documents/Images/JocysComSslScanner_Certificates.png" width="800" height="425">
+<img alt="Certificates" src="Tool/Documents/Images/JocysComSslScanner_Certificates.png" width="960" height="510">
                                                                                                                
-<img alt="Domains" src="Tool/Documents/Images/JocysComSslScanner_Domains.png" width="800" height="425">
+<img alt="Domains" src="Tool/Documents/Images/JocysComSslScanner_Domains.png" width="960" height="510">
