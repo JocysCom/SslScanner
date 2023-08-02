@@ -36,7 +36,10 @@ namespace JocysCom.SslScanner.Tool
 		public ushort Port { get => _Port; set => SetProperty(ref _Port, value); }
 		ushort _Port;
 
-		public bool? IsValid { get => _IsValid; set => SetProperty(ref _IsValid, value); }
+        public string ResponseStatus { get => _ResponseStatus; set => SetProperty(ref _ResponseStatus, value); }
+        string _ResponseStatus;
+
+        public bool? IsValid { get => _IsValid; set => SetProperty(ref _IsValid, value); }
 		bool? _IsValid;
 
 		[XmlIgnore] 
@@ -118,8 +121,6 @@ namespace JocysCom.SslScanner.Tool
 
 		[XmlIgnore]
 		public bool ValidDaysSpecified => ValidDays.HasValue;
-
-
 
 		public string CN { get => _CN; set => SetProperty(ref _CN, value); }
 		string _CN;

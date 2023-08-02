@@ -246,7 +246,8 @@ namespace JocysCom.SslScanner.Tool.Controls
 						HostColumn, PortColumn, IPv4Column,
 						ValidToColumn, ValidDaysColumn,
 						ProtocolsColumn, AlgorithmColumn,
-						NotesColumn, EndColumn);
+                        ResponseStatusColumn,
+                        NotesColumn, EndColumn);
 					ShowButtons(AddButton, ImportButton, ExportButton,
 						CertificateButton, WebButton,
 						DeleteButton, RefreshButton, RefreshAllButton);
@@ -259,7 +260,8 @@ namespace JocysCom.SslScanner.Tool.Controls
 						GroupColumn, EnvironmentColumn,
 						HostColumn, IPv4Column,
 						ValidToColumn, ValidDaysColumn,
-						NotesColumn, EndColumn);
+                        ResponseStatusColumn,
+                        NotesColumn, EndColumn);
 					ShowButtons(AddButton, ImportButton, ExportButton,
 						WhoisButton, WebButton,
 						DeleteButton, RefreshButton, RefreshAllButton);

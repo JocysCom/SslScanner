@@ -1,7 +1,9 @@
 ﻿using JocysCom.ClassLibrary.Controls;
 using System;
+using System.Net;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -128,6 +130,8 @@ namespace JocysCom.SslScanner.Tool
 							sb.AppendLine("-----END CERTIFICATE-----");
 							item.PublicKeyData = sb.ToString();
 							item.SecurityProtocols = protocols;
+							var uri = new UriBuilder(Uri.UriSchemeHttps, item.Host, item.Port).Uri;
+                            item.ResponseStatus = GetResponseStatus(uri.AbsoluteUri);
 						}
 						else
 						{
@@ -170,5 +174,23 @@ namespace JocysCom.SslScanner.Tool
 			}
 		}
 
-	}
+        public static string GetResponseStatus(string url)
+        {
+			try
+			{
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                var response = (HttpWebResponse)request.GetResponse();
+                var statusCode = (int)response.StatusCode;
+                var statusText = response.StatusDescription;
+                response.Close();
+                return $"{statusCode} - {statusText}";
+            }
+            catch (Exception ex)
+			{
+				return ex.Message;
+			}
+        }
+    }
+
 }
+
