@@ -66,7 +66,7 @@ namespace JocysCom.ClassLibrary.Network
 				if (!IPAddress.TryParse(address, out ipAddress) && !allowNoAddress)
 					continue;
 				// If comment was hidden then...
-				if (comment.StartsWith('!'))
+				if (comment.StartsWith("!"))
 					comment = comment.Substring(1).Trim();
 				foreach (var host in hosts)
 				{

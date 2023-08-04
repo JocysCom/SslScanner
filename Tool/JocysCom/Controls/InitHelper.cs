@@ -82,23 +82,26 @@ namespace JocysCom.ClassLibrary.Controls
 			ih._Timer.Start();
 		}
 
+		private static void Control_Loaded(object sender, RoutedEventArgs e)
+		{
+			var control = (FrameworkElement)sender;
+			var name = $"{control.GetType()} {control.Name} {control.GetHashCode()}";
+			if (LoadedControlNames.Contains(name))
+				Console.WriteLine($"WARN: Control is loaded already: {name}");
+			LoadedControlNames.Add(name);
+		}
+
 		private static void Control_Unloaded(object sender, RoutedEventArgs e)
 		{
 			var control = (FrameworkElement)sender;
 			var name = $"{control.GetType()} {control.Name} {control.GetHashCode()}";
 			LoadedControlNames.Remove(name);
+			Debug.WriteLine($"-5-> LoadedControlNames.Count = {LoadedControlNames.Count()} // Unloaded: {name}");
 			// Remove events.
 			control.Loaded -= Control_Loaded;
 			control.Unloaded -= Control_Unloaded;
 			control.IsVisibleChanged -= Control_IsVisibleChanged;
 			//control.PropertyChanged -= Control_PropertyChanged;
-		}
-
-		private static void Control_Loaded(object sender, RoutedEventArgs e)
-		{
-			var control = (FrameworkElement)sender;
-			var name = $"{control.GetType()} {control.Name} {control.GetHashCode()}";
-			LoadedControlNames.Add(name);
 		}
 
 		private static void Control_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -120,7 +123,7 @@ namespace JocysCom.ClassLibrary.Controls
 			InitHelper ih = null;
 			lock (TimersLock)
 				ih = Timers.FirstOrDefault(x => Equals(x.Control, sender));
-			if (ih == null)
+			if (ih is null)
 				return;
 			ih._PropertyChangedCount++;
 			ih.EndDate = DateTime.Now;
@@ -138,7 +141,7 @@ namespace JocysCom.ClassLibrary.Controls
 			lock (TimersLock)
 			{
 				ih = Timers.FirstOrDefault(x => Equals(x._Timer, sender));
-				if (ih == null)
+				if (ih is null)
 					return;
 				Timers.Remove(ih);
 				_InitEndCount++;

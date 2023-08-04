@@ -30,9 +30,9 @@ namespace JocysCom.ClassLibrary.Files
 
 		public static void Write(StreamWriter stream, DataTable table, bool header, string delimeter, CsvQuote quoteType)
 		{
-			if (stream == null)
+			if (stream is null)
 				throw new ArgumentNullException(nameof(stream));
-			if (table == null)
+			if (table is null)
 				throw new ArgumentNullException(nameof(table));
 			// Write headers.
 			if (header)
@@ -73,7 +73,7 @@ namespace JocysCom.ClassLibrary.Files
 
 		private static void WriteValue(TextWriter stream, object value, string delimeter, CsvQuote quoteType)
 		{
-			if (value == null)
+			if (value is null)
 				return;
 			var s = value.ToString().Trim();
 			var quote = quoteType == CsvQuote.All ||
@@ -142,7 +142,7 @@ namespace JocysCom.ClassLibrary.Files
 		{
 			get
 			{
-				if (_splitRx == null)
+				if (_splitRx is null)
 				{
 					// https://stackoverflow.com/questions/34132392/regular-expression-c-for-csv-by-rfc-4180
 					_splitRx = new Regex(
