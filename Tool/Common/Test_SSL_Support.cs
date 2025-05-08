@@ -128,8 +128,9 @@ public class Test_SSL_Support
 				Console.ForegroundColor = ConsoleColor.DarkYellow;
 				Console.WriteLine();
 				Console.WriteLine("        " + certEx.Message);
-				foreach (var key in ex.Data.Keys)
-					Console.WriteLine("        {0}: {1}", key, ex.Data[key]);
+				if (ex != null)
+					foreach (var key in ex.Data.Keys)
+						Console.WriteLine("        {0}: {1}", key, ex.Data[key]);
 				Console.ForegroundColor = foreDefault;
 			}
 			// If failed TCP connect then no point of continuing.
