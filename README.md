@@ -2,13 +2,13 @@
 
 Scan SSL/TLS certificate and domain expiry dates. Support STARTLS protocol: SMTP (TCP:25), POP3 (TCP:110) and IMAP (TCP:143).
 
-It is a .NET Core 3.1 Project.
+It is a .NET Core 8.0 Project.
 
 # Download
 
-Digitally Signed Application v1.0.10.0 (2022-04-07)
+Digitally Signed Application v1.1.6 (2025-05-08)
 
-[Download - JocysCom.SslScanner.Tool.zip](https://github.com/JocysCom/SslScanner/releases/download/1.0.0.0/JocysCom.SslScanner.Tool.zip)
+[Download - JocysCom.SslScanner.Tool.zip](https://github.com/JocysCom/SslScanner/releases/download/1.1.6/JocysCom.SslScanner.Tool.zip)
 
 ## Files
 
