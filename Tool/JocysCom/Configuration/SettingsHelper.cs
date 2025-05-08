@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -8,10 +7,19 @@ using System.Text;
 
 namespace JocysCom.ClassLibrary.Configuration
 {
+	/// <summary>
+	/// Provides utilities for managing application settings, including file comparisons,
+	/// data compression/decompression, and content transformation.
+	/// </summary>
 	public static partial class SettingsHelper
 	{
 		#region Compression
 
+		/// <summary>
+		/// Compresses the given byte array using GZip compression.
+		/// </summary>
+		/// <param name="bytes">The byte array to compress.</param>
+		/// <returns>The compressed byte array.</returns>
 		public static byte[] Compress(byte[] bytes)
 		{
 			int numRead;
@@ -31,6 +39,11 @@ namespace JocysCom.ClassLibrary.Configuration
 			return dstStream.ToArray();
 		}
 
+		/// <summary>
+		/// Decompresses a previously compressed byte array using GZip.
+		/// </summary>
+		/// <param name="bytes">The compressed byte array to decompress.</param>
+		/// <returns>The original byte array.</returns>
 		public static byte[] Decompress(byte[] bytes)
 		{
 			int numRead;
@@ -54,37 +67,81 @@ namespace JocysCom.ClassLibrary.Configuration
 
 		#region Writing
 
-		public static bool IsDifferent(string name, byte[] bytes)
+		/// <summary>
+		/// Determines if the file specified by the path is different based on its size or content checksum compared to the provided byte array.
+		/// </summary>
+		/// <param name="path">The path to the file to compare.</param>
+		/// <param name="bytes">The byte array to compare against the file's contents.</param>
+		/// <returns>True if the file is considered different; otherwise, false.</returns>
+		public static bool IsDifferent(string path, byte[] bytes)
 		{
 			if (bytes is null)
 				throw new ArgumentNullException(nameof(bytes));
-			var fi = new FileInfo(name);
-			var isDifferent = false;
-			// If file doesn't exists or file size is different then...
-			if (!fi.Exists || fi.Length != bytes.Length)
+			var fileInfo = new FileInfo(path);
+			// If the file does not exist or the size is different, then it is considered different.
+			if (!fileInfo.Exists || fileInfo.Length != bytes.Length)
+				return true;
+			// Compare checksums.
+			using (var algorithm = System.Security.Cryptography.SHA256.Create())
 			{
-				isDifferent = true;
-			}
-			else
-			{
-				// Compare checksums.
-				var algorithm = System.Security.Cryptography.SHA256.Create();
 				var byteHash = algorithm.ComputeHash(bytes);
-				var fileBytes = File.ReadAllBytes(fi.FullName);
+				var fileBytes = File.ReadAllBytes(fileInfo.FullName);
 				var fileHash = algorithm.ComputeHash(fileBytes);
-				isDifferent = !byteHash.SequenceEqual(fileHash);
+				var isDifferent = !byteHash.SequenceEqual(fileHash);
+				return isDifferent;
 			}
-			return isDifferent;
 		}
 
-		public static bool WriteIfDifferent(string name, byte[] bytes)
+		/// <summary>
+		/// Writes the specified byte array to a file at the given path if the current content of the file
+		/// is different from the byte array. This comparison takes into account file size and checksum.
+		/// To avoid truncating the file when the disk is full (or other IO errors occur), writes to a
+		/// temporary file first and then moves it to the final destination.
+		/// </summary>
+		/// <param name="path">The path where the file will be written.</param>
+		/// <param name="bytes">The byte array to write.</param>
+		/// <returns>True if the file was written; false if the contents were the same and no write occurred.</returns>
+		public static bool WriteIfDifferent(string path, byte[] bytes)
 		{
-			var isDifferent = IsDifferent(name, bytes);
-			if (isDifferent)
-				File.WriteAllBytes(name, bytes);
-			return isDifferent;
+			if (!IsDifferent(path, bytes))
+				return false;
+			if (IsEnoughSpaceAvailable(path, bytes.Length))
+			{
+				File.WriteAllBytes(path, bytes);
+				return true;
+			}
+			// Generate a temporary filename in the same directory for an atomic-like replacement.
+			// Writing to the same directory helps avoid cross-volume moves.
+			var directory = Path.GetDirectoryName(path) ?? throw new InvalidOperationException("Directory not found.");
+			var tempFileName = Path.Combine(directory, Path.GetRandomFileName());
+			try
+			{
+				// Write all bytes to the temporary file first.
+				File.WriteAllBytes(tempFileName, bytes);
+				// If we have .NET 6 or later, we could do: File.Move(tempFileName, path, overwrite: true);
+				// Otherwise, we can delete the existing file (if any) and then rename the temp file.
+				if (File.Exists(path))
+					File.Delete(path);
+				// Rename the temp file to the final path (nearly atomic on Windows).
+				File.Move(tempFileName, path);
+				return true;
+			}
+			catch
+			{
+				// Clean up the temp file if something goes wrong.
+				if (File.Exists(tempFileName))
+					File.Delete(tempFileName);
+				// Rethrow the exception or handle it as needed.
+				throw;
+			}
 		}
 
+		/// <summary>
+		/// Reads the content of a file into a string using the detected encoding of the file.
+		/// </summary>
+		/// <param name="name">The path to the file to read.</param>
+		/// <param name="encoding">The encoding used to read the file. Detected automatically if left null.</param>
+		/// <returns>The content of the file as a string.</returns>
 		public static string ReadFileContent(string name, out Encoding encoding)
 		{
 			using (var reader = new System.IO.StreamReader(name, true))
@@ -95,8 +152,11 @@ namespace JocysCom.ClassLibrary.Configuration
 		}
 
 		/// <summary>
-		/// Get file content with encoding header.
+		/// Converts a string content into a byte array with an optional encoding header.
 		/// </summary>
+		/// <param name="content">The string content to convert.</param>
+		/// <param name="encoding">The encoding to use for the byte array. If null, the default encoding is used.</param>
+		/// <returns>The byte array representation of the content, including the encoding header if specified.</returns>
 		public static byte[] GetFileContentBytes(string content, Encoding encoding = null)
 		{
 			var ms = new MemoryStream();
@@ -109,11 +169,36 @@ namespace JocysCom.ClassLibrary.Configuration
 			return bytes;
 		}
 
+		/// <summary>
+		/// Can be used to check if it is save to write the file.
+		/// </summary>
+		public static bool IsEnoughSpaceAvailable(string path, long requiredBytes)
+		{
+			// Convert a relative path to an absolute path
+			var fullPath = Path.GetFullPath(path);
+			// Extract the drive from the full path
+			var driveRoot = Path.GetPathRoot(fullPath);
+			if (string.IsNullOrEmpty(driveRoot))
+				return false;
+			var drive = new DriveInfo(driveRoot);
+			// A rule of thumb buffer: 10 MB or 5% of file size, whichever is greater.
+			long buffer = Math.Max(10 * 1024 * 1024, (long)(requiredBytes * 0.05));
+			long totalNeeded = requiredBytes + buffer;
+			return drive.AvailableFreeSpace > totalNeeded;
+		}
+
 		#endregion
 
 		#region Saving 
 
 
+		/// <summary>
+		/// Saves the byte array to a file and appends a CRC32 checksum to the filename for integrity verification.
+		/// This ensures that file contents are not tampered with and remain consistent between operations.
+		/// </summary>
+		/// <param name="name">The name of the file to save, without the checksum.</param>
+		/// <param name="bytes">The byte array containing the data to be saved to the file.</param>
+		/// <returns>FileInfo object representing the saved file, including its checksum in the filename.</returns>
 		public static FileInfo SaveFileWithChecksum(string name, byte[] bytes)
 		{
 			var assembly = Assembly.GetEntryAssembly();
@@ -136,6 +221,12 @@ namespace JocysCom.ClassLibrary.Configuration
 			return fi;
 		}
 
+
+		/// <summary>
+		/// Calculates a CRC32 checksum for the given byte array.
+		/// </summary>
+		/// <param name="bytes">The byte array to calculate the checksum for.</param>
+		/// <returns>The calculated CRC32 checksum as an unsigned 32-bit integer.</returns>
 		public static uint ComputeCRC32Checksum(byte[] bytes)
 		{
 			uint poly = 0xedb88320;
@@ -155,52 +246,6 @@ namespace JocysCom.ClassLibrary.Configuration
 		}
 
 		#endregion
-
-		#region  Synchronizing
-
-		/// <summary>
-		/// Synchronize source collection to destination.
-		/// </summary>
-		/// <remarks>
-		/// Same Code:
-		/// JocysCom\Controls\SearchHelper.cs
-		/// JocysCom\Configuration\SettingsHelper.cs
-		/// </remarks>
-		public static void Synchronize<T>(IList<T> source, IList<T> target)
-		{
-			// Create a dictionary for fast lookup in source list
-			var sourceSet = new Dictionary<T, int>();
-			for (int i = 0; i < source.Count; i++)
-				sourceSet[source[i]] = i;
-			// Iterate over the target, remove items not in source
-			for (int i = target.Count - 1; i >= 0; i--)
-				if (!sourceSet.ContainsKey(target[i]))
-					target.RemoveAt(i);
-			// Iterate over source
-			for (int s = 0; s < source.Count; s++)
-			{
-				// If item is not present in target, insert it.
-				if (!target.Contains(source[s]))
-				{
-					target.Insert(s, source[s]);
-					continue;
-				}
-				// If item is present in target but not at the right position, move it.
-				int t = target.IndexOf(source[s]);
-				if (t != s)
-				{
-					T temp = target[s];
-					target[s] = target[t];
-					target[t] = temp;
-				}
-			}
-			// Remove items at the end of target that exceed source's length
-			while (target.Count > source.Count)
-				target.RemoveAt(target.Count - 1);
-		}
-
-		#endregion
-
 
 	}
 }

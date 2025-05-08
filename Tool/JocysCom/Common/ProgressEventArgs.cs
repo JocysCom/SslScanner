@@ -1,11 +1,12 @@
 ﻿using System;
 
-namespace JocysCom.ClassLibrary.Controls
+namespace JocysCom.ClassLibrary
 {
 	public class ProgressEventArgs
 	{
 
 		public ProgressStatus State { get; set; }
+		public ProgressStatus ProcessItemState { get; set; }
 		public Exception Exception;
 
 		// --------------------------

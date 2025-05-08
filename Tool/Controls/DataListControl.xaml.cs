@@ -1,4 +1,5 @@
-﻿using JocysCom.ClassLibrary.ComponentModel;
+﻿using JocysCom.ClassLibrary;
+using JocysCom.ClassLibrary.ComponentModel;
 using JocysCom.ClassLibrary.Configuration;
 using JocysCom.ClassLibrary.Controls;
 using JocysCom.ClassLibrary.Controls.Themes;
@@ -9,6 +10,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -304,29 +306,38 @@ namespace JocysCom.SslScanner.Tool.Controls
 
 		#endregion
 
-		private void RefreshButton_Click(object sender, RoutedEventArgs e)
+		private async void RefreshButton_Click(object sender, RoutedEventArgs e)
 		{
 			var items = GetCheckedOrSelectedItems(out var containsSelected);
-			Refresh(items);
+			await Refresh(items);
 		}
 
-		private void RefreshAllButton_Click(object sender, RoutedEventArgs e)
+		private async void RefreshAllButton_Click(object sender, RoutedEventArgs e)
 		{
-			Refresh(DataItems);
+			await Refresh(DataItems);
 		}
 
-		private void Refresh(IList<DataItem> items)
+		private async Task Refresh(IList<DataItem> items)
 		{
-			InfoPanel.AddTask(DataType);
-			_ScriptExecutorParam = new ScriptExecutorParam();
-			_ScriptExecutorParam.Data = items;
-			_ScriptExecutorParam.DataItemType = DataType;
-			var success = System.Threading.ThreadPool.QueueUserWorkItem(ExecuteTask, _ScriptExecutorParam);
-			if (!success)
+			// Ensure the method uses 'await' to avoid CS1998.
+			await Task.Run(() =>
 			{
-				ProgressPanel.UpdateProgress("Task failed!", "", true);
-				InfoPanel.RemoveTask(DataType);
-			}
+				InfoPanel.AddTask(DataType);
+				_ScriptExecutorParam = new ScriptExecutorParam
+				{
+					Data = items,
+					DataItemType = DataType
+				};
+				var success = System.Threading.ThreadPool.QueueUserWorkItem(async state => await ExecuteTask(state), _ScriptExecutorParam);
+				if (!success)
+				{
+					ControlsHelper.Invoke(() =>
+					{
+						ProgressPanel.UpdateProgress("Task failed!", "", true);
+						InfoPanel.RemoveTask(DataType);
+					});
+				}
+			});
 		}
 
 		ScriptExecutor _ScriptExecutor;
@@ -335,14 +346,14 @@ namespace JocysCom.SslScanner.Tool.Controls
 		InfoControl InfoPanel
 			=> MainWindow.Current.InfoPanel;
 
-		void ExecuteTask(object state)
+		async Task ExecuteTask(object state)
 		{
 			ControlsHelper.Invoke(() =>
 				ProgressPanel.UpdateProgress("Starting...", "", true));
 			_ScriptExecutor = new ScriptExecutor();
 			_ScriptExecutor.Progress -= _ScriptExecutor_Progress;
 			_ScriptExecutor.Progress += _ScriptExecutor_Progress;
-			_ScriptExecutor.ProcessData((ScriptExecutorParam)state);
+			await _ScriptExecutor.ProcessData((ScriptExecutorParam)state);
 		}
 
 		private void _ScriptExecutor_Progress(object sender, ProgressEventArgs e)

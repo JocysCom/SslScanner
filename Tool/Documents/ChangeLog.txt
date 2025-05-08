@@ -1,2 +1,5 @@
-v1.0.9.0 (2022-04-06)
+2025-05-08 v1.1.6
+- Update: Update to .NET 8.0
+
+2022-04-06 v1.0.9
 - New: Initial release.

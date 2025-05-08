@@ -36,7 +36,7 @@
                 Padding="0"
                 VerticalAlignment="Top"
                 Content="{StaticResource Icon_environment_network}"
-                Style="{StaticResource ButtonContentControl}" />
+                />
             <Label
                 Name="AboutProductLabel"
                 Grid.Row="0"
@@ -70,7 +70,7 @@
                 <Hyperlink
                     NavigateUri="https://www.jocys.com"
                     RequestNavigate="HyperLink_RequestNavigate"
-                    TextDecorations="">
+                    >
                     https://www.jocys.com
                 </Hyperlink>
             </TextBlock>

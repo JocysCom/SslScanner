@@ -57,6 +57,22 @@ namespace JocysCom.SslScanner.Tool
 		[XmlIgnore]
 		public bool BitsSpecified => Bits.HasValue;
 
+		public int? SecurityProtocolsValue
+		{
+			get => SecurityProtocols.HasValue ? (int?)SecurityProtocols.Value : null;
+			set
+			{
+				if (value.HasValue)
+					SecurityProtocols = (SslProtocols)value.Value;
+				else
+					SecurityProtocols = null;
+			}
+		}
+
+		/// <summary>
+		/// Ignore the original property because XML serializer can't serialize deprecated enum properties.
+		/// </summary>
+		[XmlIgnore]
 		public SslProtocols? SecurityProtocols
 		{
 			get => _SecurityProtocols;
@@ -70,7 +86,10 @@ namespace JocysCom.SslScanner.Tool
 				OnPropertyChanged(nameof(SupportTls13));
 			}
 		}
-		System.Security.Authentication.SslProtocols? _SecurityProtocols;
+		SslProtocols? _SecurityProtocols;
+
+		[XmlIgnore]
+		public bool SecurityProtocolsValueSpecified => SecurityProtocols.HasValue;
 
 		[XmlIgnore]
 		public bool SecurityProtocolsSpecified => SecurityProtocols.HasValue;
@@ -83,11 +102,15 @@ namespace JocysCom.SslScanner.Tool
 
 		[XmlIgnore]
 		public bool? SupportTls
+#pragma warning disable SYSLIB0039 // Type or member is obsolete
 			=> SecurityProtocols?.HasFlag(SslProtocols.Tls);
+#pragma warning restore SYSLIB0039 // Type or member is obsolete
 
 		[XmlIgnore]
 		public bool? SupportTls11
+#pragma warning disable SYSLIB0039 // Type or member is obsolete
 			=> SecurityProtocols?.HasFlag(SslProtocols.Tls11);
+#pragma warning restore SYSLIB0039 // Type or member is obsolete
 
 		[XmlIgnore]
 		public bool? SupportTls12
@@ -155,8 +178,9 @@ namespace JocysCom.SslScanner.Tool
 
 		#region ■ ISettingsItem
 
-		bool ISettingsItem.Enabled { get => IsEnabled; set => IsEnabled = value; }
-		private bool IsEnabled;
+		[DefaultValue(false)]
+		public bool IsEnabled { get => _IsEnabled; set => SetProperty(ref _IsEnabled, value); }
+		bool _IsEnabled;
 
 		public bool IsEmpty =>
 			string.IsNullOrEmpty(Host);

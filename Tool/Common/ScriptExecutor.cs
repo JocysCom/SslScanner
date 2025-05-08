@@ -1,11 +1,13 @@
-﻿using JocysCom.ClassLibrary.Controls;
+﻿using JocysCom.ClassLibrary;
+using JocysCom.ClassLibrary.Controls;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace JocysCom.SslScanner.Tool
 {
@@ -22,7 +24,7 @@ namespace JocysCom.SslScanner.Tool
 
         #endregion
 
-        public void ProcessData(ScriptExecutorParam param)
+        public async Task ProcessData(ScriptExecutorParam param)
         {
             try
             {
@@ -132,7 +134,7 @@ namespace JocysCom.SslScanner.Tool
                             item.SecurityProtocols = protocols;
                             var uri = new UriBuilder(Uri.UriSchemeHttps, item.Host, item.Port).Uri;
                             item.ResponseStatus = item.Port == 443
-                                ? GetResponseStatus(uri.AbsoluteUri)
+                                ? await GetResponseStatus(uri.AbsoluteUri)
                                 : "";
                         }
                         else
@@ -176,22 +178,23 @@ namespace JocysCom.SslScanner.Tool
             }
         }
 
-        public static string GetResponseStatus(string url)
-        {
-            try
-            {
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                var response = (HttpWebResponse)request.GetResponse();
-                var statusCode = (int)response.StatusCode;
-                var statusText = response.StatusDescription;
-                response.Close();
-                return $"{statusCode} - {statusText}";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
+		public static async Task<string> GetResponseStatus(string url)
+		{
+			try
+			{
+				using (var httpClient = new HttpClient())
+				{
+					var response = await httpClient.GetAsync(url);
+					var statusCode = (int)response.StatusCode;
+					var statusText = response.ReasonPhrase;
+					return $"{statusCode} - {statusText}";
+				}
+			}
+			catch (Exception ex)
+			{
+				return ex.Message;
+			}
+		}
     }
 
 }

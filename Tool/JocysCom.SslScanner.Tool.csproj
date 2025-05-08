@@ -1,46 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-	<UseWindowsForms>true</UseWindowsForms>
-	<Authors>Jocys.com</Authors>
-	<Company>Jocys.com</Company>
-	<Product>SSL Scanner Tool</Product>
-	<Description>Scan SSL/TLS certificate and domain expiry dates.</Description>
-	<ApplicationIcon>App.ico</ApplicationIcon>
-	<Version>1.0.10</Version>
-	<RepositoryUrl>https://github.com/JocysCom/SslScanner</RepositoryUrl>
-	<PackageProjectUrl>https://www.jocys.com</PackageProjectUrl>
-	<Copyright>Copyright © Jocys.com 2022</Copyright>
-	<PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Authors>Jocys.com</Authors>
+    <Company>Jocys.com</Company>
+    <Product>SSL Scanner Tool</Product>
+    <Description>Scan SSL/TLS certificate and domain expiry dates.</Description>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <Version>1.1.6</Version>
+    <RepositoryUrl>https://github.com/JocysCom/SslScanner</RepositoryUrl>
+    <PackageProjectUrl>https://www.jocys.com</PackageProjectUrl>
+    <Copyright>Copyright © Jocys.com 2025</Copyright>
+    <PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="App.ico" />
     <None Remove="Documents\ChangeLog.txt" />
     <None Remove="Documents\License.txt" />
     <None Remove="Resources\BuildDate.txt" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="App.ico" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Documents\ChangeLog.txt" />
     <EmbeddedResource Include="Documents\License.txt" />
     <EmbeddedResource Include="Resources\BuildDate.txt" />
   </ItemGroup>
-
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="PowerShell.exe -Command &quot;New-Item -ItemType Directory -Force -Path \&quot;$(ProjectDir)Resources\&quot; | Out-Null&quot;&#xD;&#xA;PowerShell.exe -Command &quot;(Get-Date).ToString(\&quot;o\&quot;) | Out-File \&quot;$(ProjectDir)Resources\BuildDate.txt\&quot;&quot;" />
   </Target>
-
 </Project>

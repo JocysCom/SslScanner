@@ -79,9 +79,9 @@ public class Test_SSL_Support
 		var ips = GetHostAddresses(host);
 		Console.Write("{0} {1}:{2}\r\n\r\n", ips, host, port);
 #pragma warning disable CS0618 // Type or member is obsolete
-        protocols.Remove(SslProtocols.Default);
+		protocols.Remove(SslProtocols.Default);
 #pragma warning restore CS0618 // Type or member is obsolete
-        protocols.Remove(SslProtocols.None);
+		protocols.Remove(SslProtocols.None);
 		for (int i = 0; i < protocols.Count; i++)
 		{
 			result = new Result();

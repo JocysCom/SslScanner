@@ -44,8 +44,8 @@ namespace JocysCom.ClassLibrary.Controls
 			MessageBoxOptions options = MessageBoxOptions.None
 		)
 		{
-			var win = new MessageBoxWindow();
-			return win.ShowDialog(message, caption, button, icon, defaultResult, options);
+			var box = new MessageBoxWindow();
+			return box.ShowDialog(message, caption, button, icon, defaultResult, options);
 		}
 
 		/// <summary>Displays a message box that has a message, title bar caption, button, and icon; and that accepts a default message box result, complies with the specified options, and returns a result.</summary>
@@ -110,15 +110,27 @@ namespace JocysCom.ClassLibrary.Controls
 			_SwitchButton(button, defaultResult);
 			_SwitchIcon(icon);
 			// Set size.
-			Loaded -= MessageBoxWindow_Loaded1;
-			Loaded += MessageBoxWindow_Loaded1;
+			Loaded -= MessageBoxWindow_Loaded;
+			Loaded += MessageBoxWindow_Loaded;
 			// Update size label.
 			UpdateSizeLabel();
 			if (ControlsHelper.GetMainFormTopMost())
 				Topmost = true;
+			// Attach a new Loaded event handler specifically for focusing the message text box
+			Loaded += FocusMessageTextBox;
 			// Show form.
 			var result = ShowDialog();
+			// Clean up by removing the event handler after the dialog is closed
+			Loaded -= FocusMessageTextBox;
 			return Result;
+		}
+
+		private void FocusMessageTextBox(object sender, RoutedEventArgs e)
+		{
+			// Set focus to the MessageTextBox control.
+			MessageTextBox.Focus();
+			// Set the caret position to the end of the text
+			MessageTextBox.CaretIndex = MessageTextBox.Text.Length;
 		}
 
 		public void SetSize(double width = 0, double height = 0)
@@ -135,7 +147,7 @@ namespace JocysCom.ClassLibrary.Controls
 			}
 		}
 
-		private void MessageBoxWindow_Loaded1(object sender, RoutedEventArgs e)
+		private void MessageBoxWindow_Loaded(object sender, RoutedEventArgs e)
 		{
 			if (SizeToContent == SizeToContent.Manual)
 			{

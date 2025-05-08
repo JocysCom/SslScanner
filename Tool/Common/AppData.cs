@@ -1,11 +1,16 @@
 ﻿using JocysCom.ClassLibrary.ComponentModel;
+using JocysCom.ClassLibrary.Configuration;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace JocysCom.SslScanner.Tool
 {
-	public class AppData : JocysCom.ClassLibrary.Configuration.ISettingsItem, INotifyPropertyChanged
+	public class AppData : ISettingsItem, INotifyPropertyChanged
 	{
+
+		bool ISettingsItem.IsEnabled { get => Enabled; set => Enabled = value; }
+
+		[DefaultValue(false)]
 		public bool Enabled { get; set; }
 
 		public bool IsEmpty =>
@@ -40,6 +45,7 @@ namespace JocysCom.SslScanner.Tool
 			get => _WhoisValidToRegex;
 			set => SetProperty(ref _WhoisValidToRegex, value);
 		}
+
 		private string _WhoisValidToRegex = @"(Expiry Date|Expiration Date|Expires):\s*(?<Value>[^\s]+)";
 
 		#endregion
