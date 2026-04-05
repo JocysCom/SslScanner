@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace JocysCom.ClassLibrary
 {
@@ -139,6 +140,7 @@ namespace JocysCom.ClassLibrary
 			throw new Exception("Resource not found");
 		}
 
+		/// <summary>Converts a resource Stream to the specified type T: returns Stream, string (BOM-aware), System.Drawing.Image (.NET Framework), or byte[].</summary>
 		static T ConvertResource<T>(Stream stream)
 		{
 			if (typeof(T) == typeof(Stream))
@@ -162,12 +164,17 @@ namespace JocysCom.ClassLibrary
 			else
 			{
 				var bytes = new byte[stream.Length];
+#if NET7_0_OR_GREATER
+				stream.ReadExactly(bytes, 0, (int)stream.Length);
+#else
 				stream.Read(bytes, 0, (int)stream.Length);
+#endif
 				results = (T)(object)bytes;
 			}
 			return results;
 		}
 
+		/// <summary>Retrieves all loaded assemblies, prioritizing the executing, calling, and entry assemblies for resource lookup.</summary>
 		static Assembly[] GetAssemblies()
 		{
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
@@ -257,7 +264,6 @@ namespace JocysCom.ClassLibrary
 		public static async Task Debounce(Action action, int? delay = null)
 			=> await _Debounce(action, delay);
 
-
 		/// <summary>
 		/// Executes an action after a delay, canceling any previous pending executions of the same action.
 		/// This method ensures that the action is invoked only after the specified delay has elapsed since the last invocation request.
@@ -281,6 +287,7 @@ namespace JocysCom.ClassLibrary
 		/// <summary>
 		/// Debounces the specified action, ensuring it's only invoked after a specified delay since the last call.
 		/// Subsequent calls within the delay period reset the timer.
+		/// This method automatically detects WPF UI thread requirements and marshals execution appropriately.
 		/// </summary>
 		/// <param name="action">The delegate to debounce.</param>
 		/// <param name="delay">The delay in milliseconds before the delegate is invoked. Defaults to 500 milliseconds if not specified.</param>
@@ -299,11 +306,74 @@ namespace JocysCom.ClassLibrary
 				currentCount = debounceData.Counter;
 			}
 			await Task.Delay(delayValue);
+
+			bool shouldExecute = false;
 			lock (debounceData.LockObject)
 			{
-				// This is the latest scheduled call; invoke the action
-				if (currentCount == debounceData.Counter)
-					action.DynamicInvoke(args);
+				// This is the latest scheduled call; mark for execution
+				shouldExecute = currentCount == debounceData.Counter;
+			}
+
+			if (shouldExecute)
+			{
+				// Smart UI thread marshaling - detect and marshal to UI thread if needed
+				await ExecuteWithUIThreadMarshaling(action, args);
+			}
+		}
+
+		/// <summary>
+		/// Executes the given delegate with automatic UI thread marshaling if WPF is available and needed.
+		/// </summary>
+		private static async Task ExecuteWithUIThreadMarshaling(Delegate action, params object[] args)
+		{
+			// Check if WPF is available and we need UI thread marshaling
+			var dispatcher = GetWpfDispatcher();
+			if (dispatcher != null && !dispatcher.CheckAccess())
+			{
+				// We're not on the UI thread, marshal the call
+				await dispatcher.BeginInvoke(new Action(() =>
+				{
+					try
+					{
+						action.DynamicInvoke(args);
+					}
+					catch (Exception ex)
+					{
+						System.Diagnostics.Debug.WriteLine($"Error in debounced UI action: {ex}");
+					}
+				}));
+				return;
+			}
+
+			// Execute normally (either no WPF, already on UI thread, or non-WPF environment)
+			action.DynamicInvoke(args);
+		}
+
+		/// <summary>
+		/// Attempts to get the WPF Dispatcher for the current application.
+		/// Returns null if WPF is not available or no dispatcher is found.
+		/// </summary>
+		private static Dispatcher GetWpfDispatcher()
+		{
+			try
+			{
+				// Try to get dispatcher from current thread first
+				var currentDispatcher = Dispatcher.FromThread(Thread.CurrentThread);
+				if (currentDispatcher != null)
+					return currentDispatcher;
+
+				// Try to get dispatcher from application
+				var app = System.Windows.Application.Current;
+				if (app != null)
+					return app.Dispatcher;
+
+				// Try to get any available dispatcher
+				return Dispatcher.CurrentDispatcher;
+			}
+			catch
+			{
+				// WPF might not be available or initialized
+				return null;
 			}
 		}
 
@@ -321,6 +391,7 @@ namespace JocysCom.ClassLibrary
 		private PerformanceCounter _diskReadCounter = new PerformanceCounter();
 		private PerformanceCounter _diskWriteCounter = new PerformanceCounter();
 
+		/// <summary>Reads the specified PerformanceCounter (category, counter, instance) and returns its next value.</summary>
 		private static double GetCounterValue(PerformanceCounter pc, string categoryName, string counterName, string instanceName)
 		{
 			pc.CategoryName = categoryName;
@@ -329,17 +400,19 @@ namespace JocysCom.ClassLibrary
 			return pc.NextValue();
 		}
 
+		/// <summary>Specifies disk I/O metric types: ReadAndWrite, Read-only, or Write-only operations.</summary>
 		public enum DiskData { ReadAndWrite, Read, Write };
 
+		/// <summary>Gets disk I/O bytes per second using the specified DiskData metric via PhysicalDisk _Total counters.</summary>
 		public double GetDiskData(DiskData dd)
 		{
 			return dd == DiskData.Read ?
-						GetCounterValue(_diskReadCounter, "PhysicalDisk", "Disk Read Bytes/sec", "_Total") :
-						dd == DiskData.Write ?
-						GetCounterValue(_diskWriteCounter, "PhysicalDisk", "Disk Write Bytes/sec", "_Total") :
-						dd == DiskData.ReadAndWrite ?
-						GetCounterValue(_diskReadCounter, "PhysicalDisk", "Disk Read Bytes/sec", "_Total") +
-						GetCounterValue(_diskWriteCounter, "PhysicalDisk", "Disk Write Bytes/sec", "_Total") :
+					GetCounterValue(_diskReadCounter, "PhysicalDisk", "Disk Read Bytes/sec", "_Total") :
+					dd == DiskData.Write ?
+					GetCounterValue(_diskWriteCounter, "PhysicalDisk", "Disk Write Bytes/sec", "_Total") :
+					dd == DiskData.ReadAndWrite ?
+					GetCounterValue(_diskReadCounter, "PhysicalDisk", "Disk Read Bytes/sec", "_Total") +
+					GetCounterValue(_diskWriteCounter, "PhysicalDisk", "Disk Write Bytes/sec", "_Total") :
 					0;
 		}
 
@@ -350,6 +423,8 @@ namespace JocysCom.ClassLibrary
 		#region Comparisons
 
 		private static Regex _GuidRegex;
+
+		/// <summary>Regex matching GUID strings in various formats: 32 digits, hyphenated, with braces or parentheses, or hex-coded lists.</summary>
 		public static Regex GuidRegex
 		{
 			get
@@ -363,16 +438,15 @@ namespace JocysCom.ClassLibrary
 				}
 				return _GuidRegex;
 			}
-
 		}
 
+		/// <summary>Determines whether the specified string is a valid GUID format; returns false if null or empty.</summary>
 		public static bool IsGuid(string s)
 		{
 			return string.IsNullOrEmpty(s)
 				? false
 				: GuidRegex.IsMatch(s);
 		}
-
 
 		/// <summary>
 		/// Returns true if two ranges overlap.
