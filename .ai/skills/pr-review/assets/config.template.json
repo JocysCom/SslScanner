@@ -1,0 +1,11 @@
+{
+  "_comment": "Copy this file to pr-review.json at the repository root. Most Azure DevOps values are derived from Git origin and the current branch.",
+  "WorkFolder": ".tmp/pr-review",
+  "PullBranch": false,
+  "BranchFolder": ".",
+  "GenerateImages": false,
+  "ReviewAgentUrl": "https://github.com/YOUR_ORGANIZATION/AiPlatform/blob/main/.ai/skills/pr-review/SKILL.md",
+  "ReviewCommentHeader": "**🤖 AI-Assisted Review**\nCreated by [AI Platform agent with PR Review]({review_agent_url})"
+}
+
+
