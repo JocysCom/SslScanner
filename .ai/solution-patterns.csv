@@ -1,0 +1,24 @@
+CodePath,Role,ExpectedUiPath,ActualUiPath,ExpectedTestPath,ActualTestPath,Deviation,Notes
+Tool/App.xaml,bootstrap,,,Tool.Tests/AppTests.cs,,test-missing,
+Tool/App.xaml.cs,code-behind,,,Tool.Tests/AppTests.cs,,test-missing,
+Tool/Controls/AboutControl.xaml,ui-view,MainWindow > About,,Tool.Tests/Controls/AboutControlTests.cs,,test-missing,AutomationId prefix = About.
+Tool/Controls/AboutControl.xaml.cs,code-behind,,,Tool.Tests/Controls/AboutControlTests.cs,,test-missing,
+Tool/Controls/DataListControl.xaml,ui-view,MainWindow > DataList,,Tool.Tests/Controls/DataListControlTests.cs,,test-missing,AutomationId prefix = DataList.
+Tool/Controls/DataListControl.xaml.cs,code-behind,,,Tool.Tests/Controls/DataListControlTests.cs,,test-missing,
+Tool/Controls/OptionsControl.xaml,ui-view,MainWindow > Options,,Tool.Tests/Controls/OptionsControlTests.cs,,test-missing,AutomationId prefix = Options.
+Tool/Controls/OptionsControl.xaml.cs,code-behind,,,Tool.Tests/Controls/OptionsControlTests.cs,,test-missing,
+Tool/JocysCom/Controls/InfoControl.xaml,ui-view,MainWindow > Info,,Tool.Tests/JocysCom/Controls/InfoControlTests.cs,,test-missing,AutomationId prefix = Info.
+Tool/JocysCom/Controls/InfoControl.xaml.cs,code-behind,,,Tool.Tests/JocysCom/Controls/InfoControlTests.cs,,test-missing,
+Tool/JocysCom/Controls/ItemFormattingConverter.cs,converter,,,Tool.Tests/JocysCom/Controls/ItemFormattingConverterTests.cs,,test-missing,
+Tool/JocysCom/Controls/MessageBoxWindow.xaml,ui-view,MainWindow > MessageBox,,Tool.Tests/JocysCom/Controls/MessageBoxWindowTests.cs,,test-missing,AutomationId prefix = MessageBox.
+Tool/JocysCom/Controls/MessageBoxWindow.xaml.cs,code-behind,,,Tool.Tests/JocysCom/Controls/MessageBoxWindowTests.cs,,test-missing,
+Tool/JocysCom/Controls/ProgressBarControl.xaml,ui-view,MainWindow > ProgressBar,,Tool.Tests/JocysCom/Controls/ProgressBarControlTests.cs,,test-missing,AutomationId prefix = ProgressBar.
+Tool/JocysCom/Controls/ProgressBarControl.xaml.cs,code-behind,,,Tool.Tests/JocysCom/Controls/ProgressBarControlTests.cs,,test-missing,
+Tool/JocysCom/Controls/TabIndexConverter.cs,converter,,,Tool.Tests/JocysCom/Controls/TabIndexConverterTests.cs,,test-missing,
+Tool/JocysCom/Controls/Themes/Default.xaml,resource,,,,,none,
+Tool/JocysCom/Controls/Themes/Icons.xaml,resource,,,,,none,
+Tool/JocysCom/Controls/Themes/Icons.xaml.cs,code-behind,,,Tool.Tests/JocysCom/Controls/Themes/IconsTests.cs,,test-missing,
+Tool/MainWindow.xaml,shell,,,Tool.Tests/MainWindowTests.cs,,test-missing,
+Tool/MainWindow.xaml.cs,code-behind,,,Tool.Tests/MainWindowTests.cs,,test-missing,
+Tool/Resources/Icons/Icons_Default.xaml,resource,,,,,none,
+Tool/Resources/Icons/Icons_Default.xaml.cs,code-behind,,,Tool.Tests/Resources/Icons/Icons_DefaultTests.cs,,test-missing,
