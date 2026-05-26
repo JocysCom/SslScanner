@@ -273,17 +273,17 @@ public class Test_SSL_Support
 					success = true;
 					result.UpdateFromSslStream(sslStream);
 				}
-				// IMAP: https://tools.ietf.org/html/rfc2595
+				// IMAP: https://tools.ietf.org/html/rfc3501 (greeting), https://tools.ietf.org/html/rfc2595 (STARTTLS)
 				if (port == 143)
 				{
 					var connectResponse = clearTextReader.ReadLine();
-					if (!connectResponse.StartsWith("+OK"))
+					if (!connectResponse.StartsWith("* OK"))
 						throw new InvalidOperationException("IMAP Server did not respond to connection request");
-					// STARTTLS
-					clearTextWriter.WriteLine("STLS");
+					// STARTTLS (RFC 2595 — tagged command)
+					clearTextWriter.WriteLine("a001 STARTTLS");
 					var startTlsResponse = clearTextReader.ReadLine();
-					if (!startTlsResponse.StartsWith("+OK"))
-						throw new InvalidOperationException("IMAP Server did not respond to STLS request");
+					if (startTlsResponse.IndexOf(" OK", StringComparison.OrdinalIgnoreCase) < 0)
+						throw new InvalidOperationException("IMAP Server did not respond to STARTTLS request");
 					sslStream.AuthenticateAsClient(host, null, protocol, false);
 					success = true;
 					result.UpdateFromSslStream(sslStream);

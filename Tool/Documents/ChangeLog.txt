@@ -1,3 +1,6 @@
+2026-05-26 v1.1.7
+- Fix: IMAP STARTTLS protocol — use '* OK' greeting and tagged 'STARTTLS' command (RFC 3501/2595).
+
 2025-05-08 v1.1.6
 - Update: Update to .NET 8.0
 

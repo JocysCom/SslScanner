@@ -19,10 +19,11 @@
 
 - [Done] Id: WI-9. Kind: idea. Tool - **STARTTLS protocol support (SMTP/POP3/IMAP):** Scan SSL on STARTTLS ports 25/110/143. Impact: 4. Confidence: 5. Effort: 3. Score: 6.67. Source: project. Refs: commit 5bf9b6a `-Fix: StarTLS Support.`. LastConsidered: 2026-05-26.
 - [Done] Id: WI-10. Kind: improvement. Tool - **HTTPS response status column:** Show HTTP response status for port-443 entries during scan. Impact: 3. Confidence: 5. Effort: 2. Score: 7.5. Source: project. Refs: commit 63e9f91 `Add response status.`. LastConsidered: 2026-05-26.
+- [Done] Id: WI-1. Kind: fix. Tool/Common/Test_SSL_Support - **IMAP STARTTLS protocol error:** IMAP branch (port 143) reuses POP3 wire format — checks `+OK` greeting and sends `STLS`, but RFC 3501/2595 require `* OK` greeting and `STARTTLS` (tagged). Every IMAP STARTTLS scan currently throws `InvalidOperationException`. Impact: 4. Confidence: 5. Effort: 1. Score: 20. Source: project. Refs: https://github.com/JocysCom/SslScanner/issues/8. LastConsidered: 2026-05-26. Evidence: Tool/Common/Test_SSL_Support.cs:277-290 confirms `+OK`/`STLS` in the `port == 143` branch.
 
 ## Working
 
-- [Working] Id: WI-1. Kind: fix. Tool/Common/Test_SSL_Support - **IMAP STARTTLS protocol error:** IMAP branch (port 143) reuses POP3 wire format — checks `+OK` greeting and sends `STLS`, but RFC 3501/2595 require `* OK` greeting and `STARTTLS` (tagged). Every IMAP STARTTLS scan currently throws `InvalidOperationException`. Impact: 4. Confidence: 5. Effort: 1. Score: 20. Source: project. Refs: https://github.com/JocysCom/SslScanner/issues/8. LastConsidered: 2026-05-26. Evidence: Tool/Common/Test_SSL_Support.cs:277-290 confirms `+OK`/`STLS` in the `port == 143` branch.
+_(none yet)_
 
 ## Open — sorted descending by Score (includes Verifying)
 
